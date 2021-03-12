@@ -23,11 +23,9 @@ PYTHON= python
 #
 #  Makefile for the simulaiton scripts of the manuscript:
 #
-#  Veronica R. Policht, Andrew Niedringhaus, Cameron Spitzfaden,
-#	 Philip D. Laible, David F. Bocian, Christine Kirmaier, Dewey Holten,
-#	 Tomáš Mančal and Jennifer P. Ogilvie,
-#	 Hidden Vibronic and Excitonic Structure and Vibronic Coherence Transfer
-#	 in the Bacterial Reaction Center, submitted 2021
+#  Veronica R. Policht,  Cameron Spitzfaden, Jennifer P. Ogilvie
+#  and Tomáš Mančal
+#	 ..., submitted 2021
 #
 #  This file should work on most Linux/Unix systems (including macOS)
 #

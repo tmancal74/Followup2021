@@ -1,16 +1,13 @@
 This file contains information about simulation scripts for the manuscript:
 
- Veronica R. Policht, Andrew Niedringhaus, Cameron Spitzfaden,
- Philip D. Laible, David F. Bocian, Christine Kirmaier, Dewey Holten,
- Tomáš Mančal and Jennifer P. Ogilvie,
- Hidden Vibronic and Excitonic Structure and Vibronic Coherence Transfer
- in the Bacterial Reaction Center, submitted 2021
+ Veronica R. Policht, Cameron Spitzfaden, Jennifer P. Ogilvie and Tomáš Mančal
+ ..., submitted 2021
 
 The following files should be present in the current directory:
 
 README.txt  (this file)
-script_Policht2021.py
-script_Policht2021.yaml
+script_Followup2021.py
+script_Followup2021.yaml
 Makefile
 make.bat
 scr/aux_figures.py
@@ -23,7 +20,7 @@ Quick reference:
 SOFTWARE INSTALLATION
 ---------------------
 The scripts require Python 3 and the Quantarhei package installed. Open the file
-"script_Policht2021.py" as a text file, and consult it for the installation
+"script_Folloup2021.py" as a text file, and consult it for the installation
 instructions of Python 3 and the Quantarhei package.
 
 RUNNING THE SCRIPTS
@@ -40,16 +37,16 @@ for a custom script, while on Linux/Unix/Mac it is used by a unix specific progr
 called make.
 
 On Windows you can alternatively click on the runme.bat file to start the scripts in
-a new window. Path to you Python interpreter has to be set on your system for this 
+a new window. Path to you Python interpreter has to be set on your system for this
 feature to work.
 
 More information about more control over running the scripts can be found in
-script_Policht2021.py file.
+script_Followup2021.py file.
 
 CONFIGURATION AND PARAMETERS OF THE SIMULATIONS
 -----------------------------------------------
 
-Consult the file "script_Policht2021.yaml" for details on the simulation
+Consult the file "script_Followup2021.yaml" for details on the simulation
 parameters and options.
 
 
@@ -57,6 +54,6 @@ parameters and options.
 All files in this directory contain descriptions of their meaning and usage. Just
 open them as text files.
 
-Last change: January 24, 2021
+Last change: March 12, 2021
 Author: Tomas Mancal
 Email: tmancal74@gmail.com
