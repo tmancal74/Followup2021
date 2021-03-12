@@ -1,0 +1,462 @@
+################################################################################
+################################################################################
+#
+#  Configuration file for "script_Policht2021.py" script. Usage of the script
+#  and this configuration file is described within the script file. Below you
+#  will find a description of the parameter settings corresponding the three
+#  main use cases of the script.
+#
+#  Author: Tomas Mancal
+#  Last change: January 24th, 2021
+#
+################################################################################
+#
+#  The script calculates \omega_2 maps from 2D spectra of a disordered reaction
+#  center model described in the manuscript:
+#
+#  Veronica R. Policht, Andrew Niedringhaus, Cameron Spitzfaden,
+#  Philip D. Laible, David F. Bocian, Christine Kirmaier, Dewey Holten,
+#  Tomas Mancal and Jennifer P. Ogilvie,
+#  Hidden Vibronic and Excitonic Structure and Vibronic Coherence Transfer
+#  in the Bacterial Reaction Center, submitted 2021
+#
+#
+#  Script main use cases
+#  ---------------------
+#
+#  As described in the manuscript's supporting information, the script
+#  has three main use cases:
+#
+#  1. Single realization (single)
+#
+#     Calculation of a single \omega_2 map for each of the four different types
+#     of 2D spectrum according to the model parameters specified in this file.
+#
+#  2. Disorder averaging (disorder)
+#
+#     Averaging of \omega_2 maps for each of the four different types
+#     of 2D spectrum with parameters specified below in this file and with
+#     random energies generated from a Gaussian distribution
+#
+#  3. Energy gap scan (scan)
+#
+#     Calculation of a single \omega_2 map for each of the four different types
+#     of 2D spectrum according to the model parameters specified in this file,
+#     with varying energy gap between special pair and  B molecules.
+#
+#
+# The three use cases are defined later in this file to be configured thorough
+# the keyword "simulation_mode". Specify which use case to use below.
+# Possible values are: single, disorder, scan
+
+simulation_mode: disorder
+
+#
+################################################################################
+################################################################################
+#
+#
+#           CONFIGURATION SECTION
+#
+#
+################################################################################
+################################################################################
+#
+#  The script, to which this file is an input file, is designed to allow
+#  calculation of 2D spectra of molecular dimers and trimers. As it was
+#  developed for a particular trimeric model of the bacterial reaction
+#  center (RC), it does not have the full flexibility that would perhaps be
+#  expected from a script for a general trimer. In particular, the form in which
+#  input parameters are set, corresponds to the needs to study a particular
+#  model. It also partially reflects the evolutionary history of both the script
+#  and the input file.
+#
+#  Dimer model
+#  -----------
+#
+#  The basic model of the problem is a moleculer dimer, with transition energies
+#  specified by a reference transition, parameter "E0", given in inverse cm.
+#  The transition energy of the second molecule in the dimer is set by the value
+#  of the "dE01" paramater, which sets a center value of the distribution of
+#  energy gaps between the reference molecule and the secondary molecule of the
+#  dimer. This parameter is used even if no disorder is expected. Transition
+#  energy of the secondary molecule is given by E1 = E0 - dE01. Transition
+#  dipole moments of the two molecules are specified by vectors "dip1" and
+#  "dip2" in arbitrary units. Resonance coupling between the two molecular
+#  transitions is specified in inverse cm by the parameter called
+#  "resonance_coupling". Energy relaxation rate between the upper and the lower
+#  excitonic states of the dimer is specified by the parameter "rate" in inverse
+#  fs. Simple arithmetic operations such as multiplication "*", division "/"
+#  addition "+" and subtraction "-" can be used to specify some (not all) values
+#  in this input file. This feature is enabled in all options (input parameters)
+#  listed in the "_math_allowed_in" option at the end of this file (new values
+#  can be added by the user if needed). Temperature of the calculation is set
+#  with the parameter "temperature" in Kelvins, and it is used to calculate
+#  uphill rates (which are not specified otherwise) if the option
+#  "detailed_balance" is set to True. One vibrational mode can be added to the
+#  model, if the subparameter "use_vib" of the parameter "vibmode" is True.
+#  Subparameters of the parameters "vibmode" specify the properties of the
+#  vibrational mode. "HR" gives the dimensionless Huag-Rhys factor of the mode,
+#  "omega" sets the vibrational frequency in inverse centimeters, "no_g_vib" and
+#  "no_e_vib" specify the number of the vibrational states in the electronically
+#  excited state and the number of vibrational states in the electronic ground
+#  state, respectively. The minimal number of states is one. The vibrational
+#  mode is added to one of the molecules of the dimer, namely to the one with
+#  higher energy (which is assumed to be the one with transition energy E0) if
+#  the parameter "location_of_vibrations" is set to "up", or to the molecule
+#  with lower transition energy (assumed to be the secondary one) if the
+#  parameter "location_of_vibrations" is set to "down".
+#
+#  Trimer model
+#  ------------
+#
+#  For the purpose of simulating RC, a trimer model is more useful. A trimer is
+#  calculated when the subparameter "useit" of the parameter "trimer" is set to
+#  True. It is important to note that the meaning of some of the energy
+#  parameters in the trimer case is different from their meanings in the dimer
+#  case. E0 remains a reference monomer, and has a meaning of the excited state
+#  energy of the B molecule of the RC. The energy E1 = E0 - dE01 now represents
+#  the energy of the upper exciton of the special pair (SP). The subparameter
+#  E2 of the parameter "trimer" represents the lower exciton energy of the
+#  special pair. We specify the excitonic energies of the SP as if it did not
+#  interact with the B molecule. These energies are closer to the final energies
+#  we obtaine by diagonalizing the energy that the energies of the individual
+#  monomers composing the SP. We back calculate the monomeric energies from the
+#  value of the excitonic energies, and the expected energy gap between the two
+#  SP molecules. The energy gap between the SP molecules is specified by the
+#  subparameter "dE" of the parameter "trimer". The parameter resonance_coupling
+#  is now the resonance coupling between the B and the special pair molecule ...
+#  The resonance coupling between the molecules of the SP is also back
+#  calculated from the excitonic energies and the energy gap between SP
+#  molecules.
+#
+#
+#  Graphical representation of the models:
+#  ---------------------------------------
+#
+#  Below, we represent the two models graphically. The dashed lines -------
+#  represent the states explicitely specified in the input files (except for
+#  ground states which are assumed to have zero energy and are also represented
+#  by the same line). The dotted lines ....... represent the states of the
+#  monomers of the special pair. Couplings are not represented.
+#
+#-------------------------------------------------------------------------------
+#
+#       Dimer:
+#       ------
+#
+#               reference monomer (B molecule)
+#
+#       E0  ---------
+#              ^
+#              |
+#              |   dE01
+#              |                      secondary monomer
+#              |
+#              -                ---------
+#                                     E1 = E0 - dE01
+#
+#
+#
+#
+#
+#       Eg = 0
+#             ---------         ---------
+#
+#
+#-------------------------------------------------------------------------------
+#
+#       Trimer:
+#       -------
+#
+#              B molecule
+#
+#       E0 ------------
+#               ^
+#               |  dE01                               Special pair
+#               |           E1 = E0 - dE01
+#               -     E1  --------------         SP1
+#                             P+             .............
+#                                                          | dE     SP2
+#                                                            ..............
+#                     E2  --------------
+#                             P-
+#
+#
+#
+#       Eg = 0
+#         --------------  --------------     .............   ..............
+#
+#
+#-------------------------------------------------------------------------------
+#
+#  Other parameters of the script
+#  ------------------------------
+#
+#  Two dimensional spectra and the corresponding \omega_2 maps are calculated
+#  by Fast Fourier transform (FFT) of data depending on three times t1, t2 and
+#  t3. The invervals and time steps used with these times are specified as
+#  follows:
+#
+#  t2 time is the time of excited state evolution. It starts always from zero
+#  and runs for a number of steps specified by the parameter "t2_time_step",
+#  with the step length given by the parameter "t2_time_step". All values of
+#  times are in femto seconds (fs).
+#
+#  Two dimensional spectrum is calculated by Fourier transforms in two coherence
+#  times, t1 and t3, which are defined by keywords t1_N_steps and t1_time_step,
+#  and t3_N_steps and t3_time_step. The first (t1_N_steps) of the two parameters
+#  specifies the number of steps in time t1 and the second (t1_time_step) speci-
+#  fies the size of the step in time t1. Time t3 is described analogically.
+#
+#  Parameters "feature_width" and "feature_width2" specify the Gaussian full
+#  width at half maximum of the absorption spectrum of the molecules as monomers
+#  (i.e. in the case they are not coupled to the other members of
+#  the aggregate). feature_width2 corresponds to the molecules of the special
+#  pair, while feature_width specifies absorption spectrum width of
+#  the B molecule. Parameter "tukey_window_r" is the parameter r of the Tukey
+#  windowing function used for the FFT in t2 time.
+#
+#  "trim_maps_to" allows us to specify the size of the spectral window for
+#  which the spectra are calculated.
+#
+#  "omega_uncertainty" is the widths of the frequency window around the
+#  frequency of the nuclear vibrational mode, which is allowed to contribute
+#  to the \omega_2 maps. We choose only pathways which oscillate within this
+#  window.
+#
+#  The remaining parameters concern averaging over disorder and scanning
+#  energy gap between the special pair and B molecule in the reaction center.
+#
+
+################################################################################
+#
+#  System parameters
+#
+################################################################################
+
+# Transition energy of a reference monomer or the B molecule of RC in the case
+# that we use trimer model
+E0 : 11900.0  # 1/cm
+
+# energy gap between the secondary monomer and the reference monomer. Secondary
+# monomer has a lower energy E1 if dE01 is positive, because E1 = E0 - dE01
+dE01 : 630.0   # 1/cm
+
+# resonance coupling between monomer transitions
+# or between B and higher energy site in special pair
+resonance_coupling : 100.0  # 1/cm
+
+# transition dipole moments of the two molecules
+# in case of special pair: dip2 is the B molecules and dip1 is the higher energy
+# molecule of the special pair
+dip1 : [-0.9649, -0.02504, 0.2613]
+dip2 : [0.7782, 0.5332, 0.3317]
+
+# relaxation downhill rate in the dimer
+# or the rate from B to special pair higher energy exciton state
+rate :  1.0/150.0
+
+# Extension of the model by one state. If useit is set to True, the meaning
+# of some of the model parameters changes with respect their meaning in the
+# dimer model
+trimer:
+    useit : True     # use the third state
+    E2    : 11250.0   # lower exciton state of the special pair in 1/cm
+    DE    : 0.0       # site energy difference of the SP molecules (1/cm)
+    rate  : 1.0/25.0  # energy transfer rate from upper to lower exciton of SP
+    dipsp : [0.8546, 0.5051, 0.1206] # transition dipole moment of the lower
+                                     # energy site in special pair
+
+# properies of the vibrational mode
+vibmode:
+    use_vib  : True       # should we use vibrations at all?
+    HR       : 0.01       # Huang-Rhys factor of the vibration
+    omega    : 740.0      # frequency of the vibration in 1/cm
+    no_g_vib : 2 # number of vibrational levels in the ground state
+    no_e_vib : 2 # number of vibrational levels in the excited state
+    # value 2 means states with 0 and 1 vibrational quanta
+
+# On which molecule the vibrations should be placed?
+# (low or high energy monomer or both)
+location_of_vibrations : "up"  # can be "up", "down"
+
+################################################################################
+#
+#  Excitation time evolution and energy ralaxation details
+#
+################################################################################
+
+# temperature for calculation of a backward rates
+temperature : 77.0  # K
+
+# use detailed balance to calculate uphill rates based on the temperature
+detailed_balance : True
+
+# t2 time specification
+t2_N_steps          : 5
+t2_time_step        : 10.0  # fs
+fine_splitting      : 10    # number of steps inside the t2_time_step
+
+###############################################################################
+#
+#  Calculated spectra
+#
+###############################################################################
+
+# t1 time
+t1_N_steps          : 100
+t1_time_step        : 10.0  # fs
+
+# t3 time
+t3_N_steps          : 100
+t3_time_step        : 10.0  # fs
+
+# Gaussian width of the 2D spectrum features
+feature_width       : 100.0 # 1/cm
+feature_width2      : 200.0
+
+# Tukey window parameter
+tukey_window_r      : 0.3
+
+# trim maps to this spectral region
+trim_maps_to        : [11000, 14000, 11000, 14000]  # 1/cm
+
+#
+# select only pathways, which fall within +/- omega_uncertaity/2
+#
+omega_uncertainty   : 10.0 # 1/cm
+
+###############################################################################
+#
+#  Disorder and scanning parameters
+#
+###############################################################################
+
+###############################################################################
+# The following two parameters "single_realization" and "disorder" can be
+# overriden by predefined usecases (see USE CASES DEFINITION section below)
+###############################################################################
+#
+# run only a single realization corresponding to the center
+# of the disorder distribution
+single_realization: False
+# use disorder or not
+disorder: False
+
+#
+#  Energy gap scan parameters
+#
+
+# step in energy gap scanning
+step : 2.0  # 1/cm
+# maximum possible FWHM of the disorder
+max_available_fwhm : 5.0  # 1/cm
+# how many FWHM we include into the scanned energy interval
+how_many_fwhm : 2
+
+#
+#  Gaussian static disorder parameters
+#
+
+# how many realization in the disorder
+N_realizations: 5  # 384
+# FWHM of the disorder Gaussian distribution
+disorder_fwhm: 100
+
+###############################################################################
+#
+#  Parameters steering the simulation and output
+#
+###############################################################################
+
+# restart and continue a stopped or finished disorder averaging
+restart_disorder: False
+
+# starting parameters of the random distribution of energies
+random_state:
+  reset: False            # reset the random generator from a saved state
+  save: False             # save the last random state
+  file: random_state.qrp  # file to save/read random state from
+
+# The ouput directory of the script will be called "sim_up" if the variable
+# called location_of_vibrations is set to "up", or "sim_down" if the varialble
+# called location_of_vibrations is set to "down". You can add more info into
+# the directory name by specifying the variable below
+append_to_dirname : ""
+
+# You can also append time stamp to the directory, if you specify True below
+append_time_stamp: True
+
+# at which t2 values (if fs) we should save all Liouville pathways
+t2_save_pathways : [0.0, 30.0, 50.0, 100.0, 150.0, 200.0, 300.0, 500.0, 1000.0]
+
+# if set True, input file will be coppied into the directory with the results
+copy_input_file_to_results : True
+
+###############################################################################
+###############################################################################
+#
+#
+#            END OD CONFIGURATION SECTION
+#
+#
+###############################################################################
+###############################################################################
+
+###############################################################################
+###############################################################################
+#
+#            USE CASES DEFINITION
+#
+###############################################################################
+###############################################################################
+#
+#  THE MAIN SCRIPT USE CASES:
+#  --------------------------
+
+define_usecases:
+    usecases: ["simulation_mode"]
+    definitions:
+        # definition of the usecase simulation_mode
+        simulation_mode:
+            #
+            #  1. single realization \omega_2 map
+            #
+            #     single_realization: True
+            #     disorder: False
+            #
+            #
+            #  2. averaging over static disorder
+            #
+            #     single_realization: False
+            #     disorder: True
+            #
+            #
+            #  3. energy gap scan
+            #
+            #     single_realization: False
+            #     disorder: False
+            #
+            values: ["single", "disorder", "scan"]
+            variables: ["single_realization", "disorder"]
+            cases:
+                single: [True, False]
+                disorder: [False, True]
+                scan: [False, False]
+
+###############################################################################
+###############################################################################
+
+#
+# List of possible math evaluations
+#
+_math_allowed_in : ["E0", "resonance_coupling", "rate",
+                    ["vibmode",["HR","omega","rate"]],
+                    ["trimer",["rate"]],
+                    "dE01", "step", "max_available_fwhm",
+                    "how_many_fwhm", "t2_save_pathways"]
+
+###############################################################################
+###############################################################################
+# EOF
