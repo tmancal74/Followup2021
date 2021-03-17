@@ -133,4 +133,5 @@ dmypy.json
 *.dat
 sim_up*
 .DS_store
+*.pptx
 
