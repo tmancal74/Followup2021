@@ -132,3 +132,5 @@ dmypy.json
 *.mat
 *.dat
 sim_up*
+.DS_store
+

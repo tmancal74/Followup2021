@@ -495,6 +495,7 @@ def run(omega, HR, dE, JJ, rate, E0, vib_loc="up", use_vib=True,
     agg.build(mult=1)
     agg_el.build(mult=1)
 
+
     # total Hamiltonian
     HH = agg.get_Hamiltonian()
     # electronic Hamiltonian
@@ -630,6 +631,13 @@ def run(omega, HR, dE, JJ, rate, E0, vib_loc="up", use_vib=True,
     agg3.build(mult=2)
     agg3.diagonalize()
 
+    agg_el.diagonalize()
+    print("")
+    print("Square of the transition dipoles")
+    print(agg_el.D2)
+    print("")
+    print("---")
+
 
     #
     # calculation of absorption spectrum
@@ -643,7 +651,7 @@ def run(omega, HR, dE, JJ, rate, E0, vib_loc="up", use_vib=True,
     spctrm.normalize2()
 
     with qr.energy_units("1/cm"):
-        spctrm.plot(show=False, axis=[9000.0, 18000.0, 0.0, 1.1])
+        spctrm.plot(show=False, axis=[10500.0, 13500.0, 0.0, 1.1])
         spctrm.savefig("abs.png")
 
     pways = dict()

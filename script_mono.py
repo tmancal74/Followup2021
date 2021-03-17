@@ -15,7 +15,7 @@ tukey_window_r = 0.3
 normalize_maps_to_maximum = True
 trim_maps = False
 omega = 500.0
-show_omega = omega 
+show_omega = omega
 
 freqs = [500.0, 200.0, 300.0, 500.0, 700.0, 900.0]
 hrs   = [0.5, 0.1, 0.1, 0.03,     0.03,   0.03]
@@ -44,7 +44,7 @@ with qr.energy_units("1/cm"):
         mod.set_nmax(N=0, nmax=Nmax_g)
 
 
-# single member aggregate 
+# single member aggregate
 # (needs to be created to allow spectroscopic calculations)
 agg = qr.Aggregate(molecules=[mol])
 
@@ -212,7 +212,7 @@ def save_spectra(cont, ext="dat"):
         if ext == "dat":
             _data = numpy.loadtxt(flnm, dtype=complex)
             print("max=", numpy.max(_data))
- 
+
 save_spectra(cont_tot,"dat")
 
 

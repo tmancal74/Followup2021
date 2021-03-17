@@ -250,7 +250,7 @@ resonance_coupling : 100.0  # 1/cm
 # transition dipole moments of the two molecules
 # in case of special pair: dip2 is the B molecules and dip1 is the higher energy
 # molecule of the special pair
-dip1 : [-0.9649, -0.02504, 0.2613]
+dip1 : [-0.9649, -0.02504, 0.0] #[-0.9649, -0.02504, 0.2613]
 dip2 : [0.7782, 0.5332, 0.3317]
 
 # relaxation downhill rate in the dimer
@@ -263,9 +263,9 @@ rate :  1.0/150.0
 trimer:
     useit : True     # use the third state
     E2    : 11250.0   # lower exciton state of the special pair in 1/cm
-    DE    : 0.0       # site energy difference of the SP molecules (1/cm)
+    DE    : 50.0       # site energy difference of the SP molecules (1/cm)
     rate  : 1.0/25.0  # energy transfer rate from upper to lower exciton of SP
-    dipsp : [0.8546, 0.5051, 0.1206] # transition dipole moment of the lower
+    dipsp : [0.9649, 0.02504, 0.0]  # [0.8546, 0.5051, 0.1206] # transition dipole moment of the lower
                                      # energy site in special pair
 
 # properies of the vibrational mode
@@ -294,7 +294,7 @@ temperature : 77.0  # K
 detailed_balance : True
 
 # t2 time specification
-t2_N_steps          : 5
+t2_N_steps          : 20
 t2_time_step        : 10.0  # fs
 fine_splitting      : 10    # number of steps inside the t2_time_step
 

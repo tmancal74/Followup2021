@@ -168,8 +168,8 @@ clean:
 	rm -rf sim* log output.log *.tar
 
 # delete media produced by auxiliary scripts
-del:
-	rm -rf *.png *.mov *.mp4
+del: clean
+	rm -rf *.png *.mov *.mp4 spectra
 
 # delete everything
 purge: clean del

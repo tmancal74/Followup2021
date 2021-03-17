@@ -61,6 +61,12 @@ Ncont = 10
 # 2D spectrum range in 1/cm
 window=[10500,13550,10500,13550]
 
+#
+# set lines along the x axis which should be plotted
+# position along y axis in 1/cm
+#
+wlines=[12500.0, 13250.0]
+
 #cmpfile = None
 cmpfile = os.path.join("scr", "parula_colormap.dat") #"parula_colormap.mat"
 
@@ -159,6 +165,20 @@ try:
                          +str(Ncont)+".png")
             print("Saving file:", file_name)
             sp.savefig(file_name)
+
+            # taking cuts
+            with qr.energy_units("1/cm"):
+
+                for wline in wlines:
+                    print("Spectral cut at "+str(wline))
+                    cutfce = sp.get_cut_along_x(wline)
+                    x = cutfce.axis
+                    y = numpy.abs(cutfce.data)
+                    cutfce._make_me(x,y)
+                    cutfce.plot(show=False)
+                    cutfce.savefig("cut_"+ext[ext_i]+"_"+str(wline)+".png")
+
+
     print("\n... single realization files processed")
 except:
     print("\nNo single spectrum files found")
