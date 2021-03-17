@@ -301,6 +301,31 @@ def unite_containers(node=0):
     cont_m_nr = cont_m_nr.unitedir(fname4)
     cont_m_nr.save(fname4+".qrp")
 
+
+def save_spectra(cont, ext="dat"):
+    # saving total spectra
+    drnm = "spectra"
+    try:
+        os.makedirs(drnm)
+    except FileExistsError:
+        # directory already exists
+        pass
+    scont = cont.get_TwoDSpectrumContainer()
+    tags = scont.tags
+    for tg in tags:
+        #sp.plot(show=True)
+        sp = scont.get_spectrum(tag=tg)
+        flnm = os.path.join(drnm, "sp_"+str(tg)+"."+ext)
+        fgrn = os.path.join(drnm, "sp_"+str(tg)+".png")
+        sp.plot(show=False)
+        sp.savefig(fgrn)
+        print("Saving "+flnm)
+        sp.save_data(flnm)
+        if ext == "dat":
+            _data = numpy.loadtxt(flnm, dtype=complex)
+            print("max=", numpy.max(_data))
+
+
 #
 ################################################################################
 ################################################################################
@@ -494,12 +519,14 @@ def run(omega, HR, dE, JJ, rate, E0, vib_loc="up", use_vib=True,
     #
     cont_p = qr.TwoDResponseContainer(t2axis=time2)
     cont_m = qr.TwoDResponseContainer(t2axis=time2)
+    cont_tot = qr.TwoDResponseContainer(t2axis=time2)
 
     #
     # spectra will be indexed by the times in the time axis `time2`
     #
     cont_p.use_indexing_type(time2)
     cont_m.use_indexing_type(time2)
+    cont_tot.use_indexing_type(time2)
 
     #
     # We define two-time axes, which will be FFTed and will define
@@ -603,6 +630,22 @@ def run(omega, HR, dE, JJ, rate, E0, vib_loc="up", use_vib=True,
     agg3.build(mult=2)
     agg3.diagonalize()
 
+
+    #
+    # calculation of absorption spectrum
+    #
+    time1 = qr.TimeAxis(0.0, 1000, 5.0)
+    absc = qr.MockAbsSpectrumCalculator(time1, system=agg)
+    with qr.energy_units("1/cm"):
+        absc.bootstrap(rwa=E0)
+
+    spctrm = absc.calculate()
+    spctrm.normalize2()
+
+    with qr.energy_units("1/cm"):
+        spctrm.plot(show=False, axis=[9000.0, 18000.0, 0.0, 1.1])
+        spctrm.savefig("abs.png")
+
     pways = dict()
 
     olow_cm = omega-INP.omega_uncertainty/2.0
@@ -661,7 +704,14 @@ def run(omega, HR, dE, JJ, rate, E0, vib_loc="up", use_vib=True,
 
         cont_m.set_spectrum(twod)
 
-        # absorption calculation 
+        # calculation without pre-selecting pathways
+        twod = msc.calculate_one_system(t2, agg3, eUt, lab, pways=pways,
+                                        dtol=1.0e-12)
+
+        cont_tot.set_spectrum(twod)
+
+    # saving total spectrum to a directory for further analysis
+    save_spectra(cont_tot,"dat")
 
 
     #

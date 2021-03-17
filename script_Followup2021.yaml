@@ -49,7 +49,7 @@
 # the keyword "simulation_mode". Specify which use case to use below.
 # Possible values are: single, disorder, scan
 
-simulation_mode: disorder
+simulation_mode: single
 
 #
 ################################################################################

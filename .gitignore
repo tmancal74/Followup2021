@@ -130,4 +130,5 @@ dmypy.json
 
 *.png
 *.mat
-
+*.dat
+sim_up*

@@ -22,7 +22,7 @@ hrs   = [0.5, 0.1, 0.1, 0.03,     0.03,   0.03]
 Nmods = len(freqs)
 
 
-Nmods = 1
+Nmods = 2
 Nmax_g = 3
 Nmax_e = 3
 
@@ -185,10 +185,11 @@ for t2 in time2.data:
 
     cont_m.set_spectrum(twod)
 
-
+    # calculate 2D spectra without pre-selecting pathways
     twod = msc.calculate_one_system(t2, agg, eUt, lab, pways=pways,
                                     dtol=1.0e-12)
     cont_tot.set_spectrum(twod)
+
 
 def save_spectra(cont, ext="dat"):
     # saving total spectra
@@ -201,9 +202,11 @@ def save_spectra(cont, ext="dat"):
     scont = cont.get_TwoDSpectrumContainer()
     tags = scont.tags
     for tg in tags:
-        #sp.plot(show=True)
         sp = scont.get_spectrum(tag=tg)
-        flnm = os.path.join(drnm, "sp_"+str(tg)+"."+ext)
+        flnm = os.path.join(drnm, "sp_mono_"+str(tg)+"."+ext)
+        fgrn = os.path.join(drnm, "sp_mono_"+str(tg)+".png")
+        sp.plot(show=False)
+        sp.savefig(fgrn)
         print("Saving "+flnm)
         sp.save_data(flnm)
         if ext == "dat":
@@ -212,8 +215,6 @@ def save_spectra(cont, ext="dat"):
  
 save_spectra(cont_tot,"dat")
 
-
-qr.stop()
 
 #
 # Window function for subsequenty FFT
