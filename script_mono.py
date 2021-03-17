@@ -203,13 +203,14 @@ def save_spectra(cont, ext="dat"):
     for tg in tags:
         #sp.plot(show=True)
         sp = scont.get_spectrum(tag=tg)
-        flnm = OSError.path.join(drnm, "sp_"+str(tg)+"."+ext)
+        flnm = os.path.join(drnm, "sp_"+str(tg)+"."+ext)
         print("Saving "+flnm)
         sp.save_data(flnm)
-        _data = numpy.loadtxt(flnm, dtype=complex)
-        print("max=", numpy.max(_data))
+        if ext == "dat":
+            _data = numpy.loadtxt(flnm, dtype=complex)
+            print("max=", numpy.max(_data))
  
-save_spectra(cont_tot,"mat")
+save_spectra(cont_tot,"dat")
 
 
 qr.stop()
