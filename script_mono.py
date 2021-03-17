@@ -1,4 +1,5 @@
 import platform
+import os
 
 import numpy
 import quantarhei as qr
@@ -156,7 +157,7 @@ for t2 in time2.data:
                                     dtol=1.0e-12, selection=[["omega2",[olow, ohigh]]])
     pws = pways[str(t2)]
     npa = len(pws)
-    print(" p:", npa)
+    #print(" p:", npa)
     has_R = False
     has_NR = False
     for pw in pws:
@@ -173,7 +174,7 @@ for t2 in time2.data:
 
     pws = pways[str(t2)]
     npa = len(pws)
-    print(" m:", npa)
+    #print(" m:", npa)
     has_R = False
     has_NR = False
     for pw in pws:
@@ -189,6 +190,29 @@ for t2 in time2.data:
                                     dtol=1.0e-12)
     cont_tot.set_spectrum(twod)
 
+def save_spectra(cont, ext="dat"):
+    # saving total spectra
+    drnm = "spectra"
+    try:
+        os.makedirs(drnm)
+    except FileExistsError:
+        # directory already exists
+        pass
+    scont = cont.get_TwoDSpectrumContainer()
+    tags = scont.tags
+    for tg in tags:
+        #sp.plot(show=True)
+        sp = scont.get_spectrum(tag=tg)
+        flnm = OSError.path.join(drnm, "sp_"+str(tg)+"."+ext)
+        print("Saving "+flnm)
+        sp.save_data(flnm)
+        _data = numpy.loadtxt(flnm, dtype=complex)
+        print("max=", numpy.max(_data))
+ 
+save_spectra(cont_tot,"mat")
+
+
+qr.stop()
 
 #
 # Window function for subsequenty FFT
