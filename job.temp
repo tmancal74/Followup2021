@@ -1,0 +1,43 @@
+#!/bin/bash
+#PBS -N __JOB_NAME__ 
+#PBS -l select=1:ncpus=__NCPUS__:mem=16gb:scratch_local=50gb
+#PBS -l walltime=10:00:00 
+#PBS -m ae
+# The 4 lines above are options for scheduling system: job will run 1 hour at maximum, 1 machine with 4 processors + 4gb RAM memory + 10gb scratch memory are requested, email notification will be sent when the job aborts (a) or ends (e)
+
+ANACONDA=__HOME__/anaconda3/bin
+# define a DATADIR variable: directory where the input files are taken from and where output will be copied to
+DATADIR=__WDIR__ # substitute username and path to to your real username and path
+
+# append a line to a file "jobs_info.txt" containing the ID of the job, the hostname of node it is run on and the path to a scratch directory
+# this information helps to find a scratch directory in case the job fails and you need to remove the scratch directory manually 
+echo "$PBS_JOBID is running on node `hostname -f` in a scratch directory $SCRATCHDIR" >> $DATADIR/jobs_info.txt
+
+#loads the ffmpeg module and sets path to Anaconda 
+export MODULEPATH=$MODULEPATH:/storage/brno2/home/tmancal/my_modules
+module add anaconda-2021
+
+# test if scratch directory is set
+# if scratch directory is not set, issue error message and exit
+test -n "$SCRATCHDIR" || { echo >&2 "Variable SCRATCHDIR is not set!"; exit 1; }
+
+# copy input file "h2o.com" to scratch directory
+# if the copy operation fails, issue error message and exit
+cp $DATADIR/script_Followup2021.py  $SCRATCHDIR || { echo >&2 "Error while copying script_Followup2021.py file!"; exit 2; }
+cp $DATADIR/script_Followup2021.yaml  $SCRATCHDIR || { echo >&2 "Error while copying script_Followup2021.yaml file!"; exit 2; }
+
+
+# move into scratch directory
+cd $SCRATCHDIR 
+
+# run Gaussian 03 with h2o.com as input and save the results into h2o.out file
+# if the calculation ends with an error, issue error message an exit
+qrhei run -p -n __NCPUS__ script_Followup2021.yaml  || { echo >&2 "Calculation ended up erroneously (with a code $?) !!"; exit 3; }
+
+# move the output to user's DATADIR or exit in case of failure
+tar czf out.tar.gz ./sim_* || { echo >&2 "Result file(s) packing failed (with a code $?) !!"; exit 4; }
+cp out.tar.gz $DATADIR/ || { echo >&2 "Result file(s) copying failed (with a code $?) !!"; exit 4; }
+
+# clean the SCRATCH directory
+clean_scratch
+

@@ -48,6 +48,10 @@ SCRDIR=scr
 MOVIES_SCRIP=${SCRDIR}/aux_movies.py
 FIGURES_SCRIPT=${SCRDIR}/aux_figures.py
 
+# PBS
+JOBNAME=follow
+
+
 # set PARALLEL depending on the number of required processes
 ifeq ($(shell test ${NUMBER_OF_PROCESSES} -gt 1; echo $$?),0)
 PARALLEL=True
@@ -165,7 +169,7 @@ help:
 
 # delete results from all previous runs
 clean:
-	rm -rf sim* log output.log *.tar
+	rm -rf sim* log output.log *.tar job.sh
 
 # delete media produced by auxiliary scripts
 del: clean
@@ -177,6 +181,27 @@ purge: clean del
 # run a simulation
 run:
 	(time qrhei run ${PARALLELOPT} ${SCRPTNAME}.yaml) ${PIPE}
+
+
+job.sh: job.temp
+	 @awk '{gsub("__WDIR__", wdir); gsub("__HOME__", home); gsub("__JOB_NAME__", jname); gsub("__NCPUS__", ncpus)}1' home=${HOME} wdir=`pwd` jname=${JOBNAME} ncpus=${NUMBER_OF_PROCESSES} job.temp > job.sh
+
+
+qsub: job.sh
+	qsub -q global@elixir-pbs.elixir-czech.cz job.sh > jobId.txt
+
+
+check:
+	@qstat -f `cat jobId.txt` | grep job_state
+	@qstat -f `cat jobId.txt` | grep resources_used
+
+copy:
+	mkdir ../${DIR}
+	cp Makefile ../${DIR}
+	cp script_Followup2021.py ../${DIR}
+	cp script_Followup2021.yaml ../${DIR}
+	cp job.temp ../${DIR}
+
 
 # make figures from raw data (single realization or average)
 figures:
