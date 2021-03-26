@@ -8,7 +8,7 @@
 
 # Number of processes to start (if > 1, mpi4py Python package and MPI have
 # to be installed for the simulation to run in parallel)
-NUMBER_OF_PROCESSES=1
+NUMBER_OF_PROCESSES=16
 
 # run in the background
 BACKGROUND=False

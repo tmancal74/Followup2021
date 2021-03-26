@@ -49,7 +49,7 @@
 # the keyword "simulation_mode". Specify which use case to use below.
 # Possible values are: single, disorder, scan
 
-simulation_mode: single
+simulation_mode: disorder 
 
 #
 ################################################################################
@@ -360,7 +360,7 @@ how_many_fwhm : 2
 #
 
 # how many realization in the disorder
-N_realizations: 5  # 384
+N_realizations: 64  # 384
 # FWHM of the disorder Gaussian distribution
 disorder_fwhm: 100
 

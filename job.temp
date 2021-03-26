@@ -5,7 +5,6 @@
 #PBS -m ae
 # The 4 lines above are options for scheduling system: job will run 1 hour at maximum, 1 machine with 4 processors + 4gb RAM memory + 10gb scratch memory are requested, email notification will be sent when the job aborts (a) or ends (e)
 
-ANACONDA=__HOME__/anaconda3/bin
 # define a DATADIR variable: directory where the input files are taken from and where output will be copied to
 DATADIR=__WDIR__ # substitute username and path to to your real username and path
 
@@ -14,7 +13,7 @@ DATADIR=__WDIR__ # substitute username and path to to your real username and pat
 echo "$PBS_JOBID is running on node `hostname -f` in a scratch directory $SCRATCHDIR" >> $DATADIR/jobs_info.txt
 
 #loads the ffmpeg module and sets path to Anaconda 
-export MODULEPATH=$MODULEPATH:/storage/brno2/home/tmancal/my_modules
+export MODULEPATH=$MODULEPATH:__HOME__/my_modules
 module add anaconda-2021
 
 # test if scratch directory is set
@@ -36,7 +35,9 @@ qrhei run -p -n __NCPUS__ script_Followup2021.yaml  || { echo >&2 "Calculation e
 
 # move the output to user's DATADIR or exit in case of failure
 tar czf out.tar.gz ./sim_* || { echo >&2 "Result file(s) packing failed (with a code $?) !!"; exit 4; }
+tar czf spectra.tar.gz ./spectra || { echo >&2 "Result file(s) packing failed (with a code $?) !!"; exit 4; }
 cp out.tar.gz $DATADIR/ || { echo >&2 "Result file(s) copying failed (with a code $?) !!"; exit 4; }
+cp spectra.tar.gz $DATADIR/ || { echo >&2 "Result file(s) copying failed (with a code $?) !!"; exit 4; }
 
 # clean the SCRATCH directory
 clean_scratch
