@@ -65,7 +65,7 @@ window=[10500,13550,10500,13550]
 # set lines along the x axis which should be plotted
 # position along y axis in 1/cm
 #
-wlines=[12500.0, 13250.0]
+wlines=[12500.0, 13070.0]
 
 #cmpfile = None
 cmpfile = os.path.join("scr", "parula_colormap.dat") #"parula_colormap.mat"
