@@ -177,6 +177,8 @@ try:
                     cutfce._make_me(x,y)
                     cutfce.plot(show=False)
                     cutfce.savefig("cut_"+ext[ext_i]+"_"+str(wline)+".png")
+                    cutfce.save_data("cut_"+ext[ext_i]+"_"+str(wline)+".dat",
+                                     with_axis=cutfce.axis)
 
 
     print("\n... single realization files processed")

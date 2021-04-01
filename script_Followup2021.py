@@ -303,15 +303,15 @@ def unite_containers(node=0):
     cont_m_nr.save(fname4+".qrp")
 
 
-def save_spectra(cont, ext="dat"):
+def save_spectra(cont, ext="dat", dir=".", stype=qr.signal_TOTL):
     # saving total spectra
-    drnm = "spectra"
+    drnm = os.path.join(dir, "spectra")
     try:
         os.makedirs(drnm)
     except FileExistsError:
         # directory already exists
         pass
-    scont = cont.get_TwoDSpectrumContainer()
+    scont = cont.get_TwoDSpectrumContainer(stype=stype)
     tags = scont.tags
     for tg in tags:
         #sp.plot(show=True)
@@ -326,6 +326,16 @@ def save_spectra(cont, ext="dat"):
         if ext == "dat":
             _data = numpy.loadtxt(flnm, dtype=complex)
             print("max=", numpy.max(_data))
+
+    try:
+        save_cont = INP.total_spectrum["native_container"]
+    except:
+        save_cont = False
+
+    if save_cont:
+        cont.save(os.path.join(dir, "spectra_container.qrp"))
+
+
 
 
 #
@@ -655,6 +665,7 @@ def run(omega, HR, dE, JJ, rate, E0, vib_loc="up", use_vib=True,
     with qr.energy_units("1/cm"):
         spctrm.plot(show=False, axis=[10500.0, 13500.0, 0.0, 1.1])
         spctrm.savefig("abs.png")
+        spctrm.save_data("abs.dat")
 
     pways = dict()
 
@@ -721,7 +732,30 @@ def run(omega, HR, dE, JJ, rate, E0, vib_loc="up", use_vib=True,
         cont_tot.set_spectrum(twod)
 
     # saving total spectrum to a directory for further analysis
-    save_spectra(cont_tot,"dat")
+    try:
+        saveit = INP.total_spectrum["save_it"]
+    except:
+        saveit = False
+
+    if saveit:
+        try:
+            dform = INP.total_spectrum["data_format"]
+        except:
+            dform = "dat"
+        try:
+            stp = INP.total_spectrum["spectra_type"]
+            if stp == "TOTL":
+                stype = qr.signal_TOTL
+            elif stp == "REPH":
+                stype = qr.signal_REPH
+            elif stp == "NONR":
+                stype = qr.signal_NONR
+            else:
+                raise Exception("Wrong signal type")
+        except:
+            stype = qr.signal_REPH
+
+        save_spectra(cont_tot, ext=dform, dir=dname, stype=stype)
 
 
     #

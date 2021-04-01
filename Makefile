@@ -160,6 +160,13 @@ help:
 	@echo "    (see configureation yaml file). results_directory is"
 	@echo "    the directory containing results of Quantarhei simulation."
 	@echo
+	@echo "> make pathways FILE=pws_file N=n"
+	@echo
+	@echo "    Prints out Feynman diagrams of rephasing pathways contributing to "
+	@echo "    a spectral region specified within the script file "
+	@echo "    'scr/aux_pathways.py'. N specifies the maximum number "
+	@echo "    of printed pathways."
+	@echo
 	@echo "> make clean "
 	@echo
 	@echo "    Deletes the output of the simulations "
@@ -175,7 +182,7 @@ clean:
 
 # delete media produced by auxiliary scripts
 del: clean
-	rm -rf *.png *.mov *.mp4 spectra
+	rm -rf *.png *.mov *.mp4 *.dat
 
 # delete everything
 purge: clean del
@@ -185,6 +192,8 @@ run:
 	(time qrhei run ${PARALLELOPT} ${SCRPTNAME}.yaml) ${PIPE}
 
 
+##### PBS specific tasks
+
 job.sh: job.temp
 	 @awk '{gsub("__WDIR__", wdir); gsub("__HOME__", home); gsub("__JOB_NAME__", jname); gsub("__NCPUS__", ncpus)}1' home=${HOME} wdir=`pwd` jname=${JOBNAME} ncpus=${NUMBER_OF_PROCESSES} job.temp > job.sh
 
@@ -192,10 +201,11 @@ job.sh: job.temp
 qsub: job.sh
 	qsub -q global@elixir-pbs.elixir-czech.cz job.sh > jobId.txt
 
-
 check:
 	@qstat -f `cat jobId.txt` | grep job_state
 	@qstat -f `cat jobId.txt` | grep resources_used
+
+#####
 
 copy:
 	mkdir ../${DIR}
@@ -222,7 +232,8 @@ pathways:
 excitons:
 	${PYTHON} ${EXCITON_SCRIPT} ${DIR}
 
-# creates a tar ball with all the files required to run simulations (Unix/Linux/macOS only feature)
+# creates a tar ball with all the files required to run simulations
+# (Unix/Linux/macOS only feature)
 pack:
 	tar cf ${SCRPTNAME}.tar ${SCRDIR} make.bat Makefile
 	tar rf ${SCRPTNAME}.tar README.txt runme.bat ${SCRPTNAME}.*

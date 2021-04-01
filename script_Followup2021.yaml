@@ -49,7 +49,7 @@
 # the keyword "simulation_mode". Specify which use case to use below.
 # Possible values are: single, disorder, scan
 
-simulation_mode: disorder 
+simulation_mode: disorder
 
 #
 ################################################################################
@@ -369,6 +369,17 @@ disorder_fwhm: 100
 #  Parameters steering the simulation and output
 #
 ###############################################################################
+
+#
+# Total spectrum is also saved at different t2 times into "spectra" directory
+#
+total_spectrum:
+   save_it: True
+   native_container: False  # in addition to individual spectra, we can also
+                            # save the whole container in the native format
+   data_format: "dat"    # use: "mat" for Matlab, "dat" or "txt" for ASCII data
+   spectra_type: "REPH"  # use: "REPH", "NONR", or "TOTL"
+
 
 # restart and continue a stopped or finished disorder averaging
 restart_disorder: False
