@@ -47,6 +47,8 @@ SCRPTNAME=script_Followup2021
 SCRDIR=scr
 MOVIES_SCRIP=${SCRDIR}/aux_movies.py
 FIGURES_SCRIPT=${SCRDIR}/aux_figures.py
+PATHWAYS_SCRIPT=${SCRDIR}/aux_pathways.py
+EXCITON_SCRIPT=${SCRDIR}/aux_excitons.py
 
 # PBS
 JOBNAME=follow
@@ -201,7 +203,10 @@ copy:
 	cp script_Followup2021.py ../${DIR}
 	cp script_Followup2021.yaml ../${DIR}
 	cp job.temp ../${DIR}
-
+	cp -r scr/ ../${DIR}
+ifneq ("$(wildcard run.sh)","")
+	cp run.sh ../${DIR}
+endif
 
 # make figures from raw data (single realization or average)
 figures:
@@ -210,6 +215,12 @@ figures:
 # make movies from raw data of enegy gap scan
 movies:
 	${PYTHON} ${MOVIES_SCRIP} ${DIR} ${NUMBER_OF_PROCESSES}
+
+pathways:
+	${PYTHON} ${PATHWAYS_SCRIPT} ${FILE} ${N}
+
+excitons:
+	${PYTHON} ${EXCITON_SCRIPT} ${DIR}
 
 # creates a tar ball with all the files required to run simulations (Unix/Linux/macOS only feature)
 pack:

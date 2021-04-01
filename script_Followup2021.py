@@ -201,6 +201,7 @@ import platform
 
 # Numpy library
 import numpy
+import matplotlib.pyplot as plt
 
 # Quantarhei imports
 import quantarhei as qr
@@ -319,6 +320,7 @@ def save_spectra(cont, ext="dat"):
         fgrn = os.path.join(drnm, "sp_"+str(tg)+".png")
         sp.plot(show=False)
         sp.savefig(fgrn)
+        plt.close()
         print("Saving "+flnm)
         sp.save_data(flnm)
         if ext == "dat":
