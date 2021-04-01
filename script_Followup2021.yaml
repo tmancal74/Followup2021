@@ -14,9 +14,7 @@
 #  The script calculates \omega_2 maps from 2D spectra of a disordered reaction
 #  center model described in the manuscript:
 #
-#  Veronica R. Policht, Andrew Niedringhaus, Cameron Spitzfaden,
-#  Philip D. Laible, David F. Bocian, Christine Kirmaier, Dewey Holten,
-#  Tomas Mancal and Jennifer P. Ogilvie,
+#  Veronica R. Policht, Cameron Spitzfaden, Jennifer P. Ogilvie, and Tomas Mancal 
 #  Hidden Vibronic and Excitonic Structure and Vibronic Coherence Transfer
 #  in the Bacterial Reaction Center, submitted 2021
 #
@@ -49,7 +47,7 @@
 # the keyword "simulation_mode". Specify which use case to use below.
 # Possible values are: single, disorder, scan
 
-simulation_mode: disorder
+simulation_mode: single
 
 #
 ################################################################################
@@ -250,8 +248,8 @@ resonance_coupling : 100.0  # 1/cm
 # transition dipole moments of the two molecules
 # in case of special pair: dip2 is the B molecules and dip1 is the higher energy
 # molecule of the special pair
-dip1 : [-0.9649, -0.02504, 0.0] #[-0.9649, -0.02504, 0.2613]
-dip2 : [0.7782, 0.5332, 0.3317]
+dip1 : [0.0, 0.0, 0.0] #[-0.9649, -0.02504, 0.0] #[-0.9649, -0.02504, 0.2613]
+dip2 : [1.0, 0.0, 0.0] #[0.7782, 0.5332, 0.3317]
 
 # relaxation downhill rate in the dimer
 # or the rate from B to special pair higher energy exciton state
@@ -261,7 +259,7 @@ rate :  1.0/150.0
 # of some of the model parameters changes with respect their meaning in the
 # dimer model
 trimer:
-    useit : True     # use the third state
+    useit : False     # use the third state
     E2    : 11250.0   # lower exciton state of the special pair in 1/cm
     DE    : 0.0       # site energy difference of the SP molecules (1/cm)
     rate  : 1.0/25.0  # energy transfer rate from upper to lower exciton of SP
@@ -294,7 +292,7 @@ temperature : 77.0  # K
 detailed_balance : True
 
 # t2 time specification
-t2_N_steps          : 100
+t2_N_steps          : 30
 t2_time_step        : 10.0  # fs
 fine_splitting      : 10    # number of steps inside the t2_time_step
 

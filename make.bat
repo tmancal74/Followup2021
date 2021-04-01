@@ -24,9 +24,12 @@ rem     Settings (do not edit anything below this line)
 rem
 rem ######################################################################
 
+set SCRPTNAME=script_Followup2021
 set SCRDIR=scr
 set MOVIES_SCRIP=%SCRDIR%\aux_movies.py
 set FIGURES_SCRIPT=%SCRDIR%\aux_figures.py
+set PATHWAYS_SCRIPT=%SCRDIR%\aux_pathways.py
+set EXCITON_SCRIPT=%SCRDIR%\aux_excitons.py
 
 rem use NUMBER_OF_PROCESSES to set PARALLEL
 if %NUMBER_OF_PROCESSES% gtr 1 (
@@ -36,14 +39,14 @@ if %NUMBER_OF_PROCESSES% gtr 1 (
 )
 
 rem test MPI presence
-set MPI_REPORT= MPI presence not tested
+set MPI_REPORT=MPI presence not tested
 if %PARALLEL%==True (
    %PYTHON% %SCRDIR%\probe_mpi.py
    if %ERRORLEVEL% geq 1 (
       set MPI_REPORT=MPI not found: mpi4py package or MPI implementation missing
       set PARALLEL=False
    ) else (
-      set MPI_REPORT= MPI probed with success!
+      set MPI_REPORT=MPI probed with success!
       set PARALLEL=True
    )
 )
@@ -108,7 +111,7 @@ if %task% == run (
    ) else (
       echo Wait untill the simulation is finished ^(use Ctrl-c to stop execution^) ...
    )
-   %STARTER% qrhei run %PARALLELOPT% script_Policht2021.yaml %PIPE%
+   %STARTER% qrhei run %PARALLELOPT% %SCRPTNAME%.yaml %PIPE%
 
 
 ) else if %task% == figures (
@@ -118,6 +121,14 @@ if %task% == run (
 ) else if %task% == movies (
 
    %PYTHON% %MOVIES_SCRIP% %2 %NUMBER_OF_PROCESSES%
+
+) else if %task% == pathways (
+
+   %PYTHON% %PATHWAYS_SCRIPT% %2 %3
+
+) else if %task% == excitons (
+
+   %PYTHON% %EXCITON_SCRIPT% %2
 
 rem     Cleaning files
 ) else if %task% == clean (
@@ -135,6 +146,7 @@ rem     Cleaning media files
    if exist *.png del *.png
    if exist *.mov del *.mov
    if exist *.mp4 del *.mp4
+   if exist *.dat del *.dat
 
 rem    Help message
 ) else if %task% == help (
@@ -172,6 +184,13 @@ rem    Help message
    echo     which ran in the simulation mode "scan"
    echo     ^(see configureation yaml file^). results_directory is
    echo     the directory containing results of Quantarhei simulation.
+   echo.
+   echo ^> make pathways pws_file n
+   echo.
+   echo     Prints out Feynman diagrams of rephasing pathways contributing to
+   echo     a spectral region specified within the script file
+   echo     'scr/aux_pathways.py'. Integer number n specifies the maximum number 
+   echo     of printed pathways.  
    echo.
    echo ^> make clean
    echo.

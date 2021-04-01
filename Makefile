@@ -8,7 +8,7 @@
 
 # Number of processes to start (if > 1, mpi4py Python package and MPI have
 # to be installed for the simulation to run in parallel)
-NUMBER_OF_PROCESSES=16
+NUMBER_OF_PROCESSES=1
 
 # run in the background
 BACKGROUND=False
@@ -31,7 +31,7 @@ PYTHON= python
 #
 #  Type the following on the command line
 #  (">" represents the command line prompt)
-#
+#EXCITON_SCRIPT}
 #  > make help
 #
 #  to see the list of available tasks. The tasks can be configured in the
