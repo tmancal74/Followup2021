@@ -664,8 +664,8 @@ def run(omega, HR, dE, JJ, rate, E0, vib_loc="up", use_vib=True,
 
     with qr.energy_units("1/cm"):
         spctrm.plot(show=False, axis=[10500.0, 13500.0, 0.0, 1.1])
-        spctrm.savefig("abs.png")
-        spctrm.save_data("abs.dat")
+        spctrm.savefig(os.path.join(dname, "abs.png"))
+        spctrm.save_data(os.path.join(dname, "abs.dat"))
 
     pways = dict()
 

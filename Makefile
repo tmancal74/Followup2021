@@ -178,11 +178,11 @@ help:
 
 # delete results from all previous runs
 clean:
-	rm -rf sim* log output.log *.tar job.sh
+	rm -rf sim* log output.log *.tar job.sh test.log
 
 # delete media produced by auxiliary scripts
 del: clean
-	rm -rf *.png *.mov *.mp4 *.dat
+	rm -rf *.png *.mov *.mp4 *.dat *.bak 
 
 # delete everything
 purge: clean del
@@ -237,6 +237,22 @@ excitons:
 pack:
 	tar cf ${SCRPTNAME}.tar ${SCRDIR} make.bat Makefile
 	tar rf ${SCRPTNAME}.tar README.txt runme.bat ${SCRPTNAME}.*
+
+back:
+ifneq ("$(wildcard script_Followup2021.yaml)","")
+	mv script_Followup2021.yaml script_Followup2021.yaml.bak
+endif
+
+#
+# Input files for example runs
+#
+set_example_single: back
+	cp templates/script_Followup2021_example_single.yaml ./script_Followup2021.yaml
+	
+set_example_scan: back
+	cp templates/script_Followup2021_example_scan.yaml ./script_Followup2021.yaml
+	
+
 
 ################################################################################
 # EOF
