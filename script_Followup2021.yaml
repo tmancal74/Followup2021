@@ -47,7 +47,7 @@
 # the keyword "simulation_mode". Specify which use case to use below.
 # Possible values are: single, disorder, scan
 
-simulation_mode: scan
+simulation_mode: single
 
 #
 ################################################################################
@@ -292,7 +292,7 @@ temperature : 77.0  # K
 detailed_balance : True
 
 # t2 time specification
-t2_N_steps          : 100
+t2_N_steps          : 30
 t2_time_step        : 10.0  # fs
 fine_splitting      : 10    # number of steps inside the t2_time_step
 
@@ -349,7 +349,7 @@ disorder: False
 # step in energy gap scanning
 step : 2.0  # 1/cm
 # maximum possible FWHM of the disorder
-max_available_fwhm : 50.0  # 1/cm
+max_available_fwhm : 5.0  # 1/cm
 # how many FWHM we include into the scanned energy interval
 how_many_fwhm : 2
 

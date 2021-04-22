@@ -130,6 +130,16 @@ if %task% == run (
 
    %PYTHON% %EXCITON_SCRIPT% %2
 
+) else if %task% == copy (
+
+   mkdir ..\%2
+   copy  script_Followup2021.* ..\%2
+   copy  make.bat ..\%2   
+   copy  Makefile ..\%2
+   copy  scr ..\%2
+    
+
+
 rem     Cleaning files
 ) else if %task% == clean (
 
@@ -138,6 +148,7 @@ rem     Cleaning files
    if exist *~ del *~
    if exist log del log
    if exist output.log del output.log
+   if exist *.bak del *.bak
 
 rem     Cleaning media files
 ) else if %task% == del (
@@ -147,6 +158,83 @@ rem     Cleaning media files
    if exist *.mov del *.mov
    if exist *.mp4 del *.mp4
    if exist *.dat del *.dat
+   if exist *.qrp del *.qrp
+   if exist test.log del test.log
+
+rem     Removing all files
+) else if %task% == purge (
+   make clean
+   make del
+
+rem     Backing up imput file
+) else if %task% == back (
+   if exist script_Followup2021.yaml move script_Followup2021.yaml script_Followup2021.yaml.bak
+
+rem     Setting test in simulation mode single
+) else if %task% == set_test_single (
+   make back
+   copy templates\script_Followup2021_test_single.yaml .\script_Followup2021.yaml
+
+rem     Setting test in simulation mode disorder
+) else if %task% == set_test_disorder (
+   make back
+   copy templates\data_test_disorder\random_state.qrp .\
+   copy templates\script_Followup2021_test_disorder.yaml .\script_Followup2021.yaml
+
+rem     Setting test in simulation mode scan
+) else if %task% == set_test_scan (
+   make back
+   copy templates\script_Followup2021_test_scan.yaml .\script_Followup2021.yaml
+
+rem     Validating results against saved data
+) else if %task% == validate (
+   %PYTHON% %VALIDATION_SCRIPT% %2
+
+rem     Test scan
+) else if %task% == test_scan (
+   make set_test_scan
+   make run
+   make validate
+   make clean
+   echo test_scan ended with success >> test.log
+
+rem     Test single
+) else if %task% == test_single (
+   make set_test_single
+   make run
+   make validate
+   make clean
+   echo test_single ended with success >> test.log
+
+rem     Test disorder
+) else if %task% == test_disorder (
+   make set_test_disorder
+   make run
+   make validate
+   make clean
+   echo test_disorder ended with success >> test.log
+
+rem     Complete set of tests
+) else if %task% == test (
+   make purge
+   make test_single
+   make test_disorder
+   make test_scan
+
+rem     Setting example in simulation mode single
+) else if %task% == set_example_single_dimer (
+   make back
+   copy templates\script_Followup2021_example_single_dimer.yaml .\script_Followup2021.yaml
+
+rem     Setting example in simulation mode disorder
+) else if %task% == set_example_single (
+   make back
+   copy templates\script_Followup2021_example_disorder.yaml .\script_Followup2021.yaml
+
+rem     Setting example in simulation mode scan
+) else if %task% == set_example_scan (
+   make back
+   copy templates\script_Followup2021_example_scan.yaml .\script_Followup2021.yaml
 
 rem    Help message
 ) else if %task% == help (

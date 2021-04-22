@@ -500,12 +500,14 @@ def run(omega, HR, dE, JJ, rate, E0, vib_loc="up", use_vib=True,
     # Before we build the aggregate, we make its copy to have an unbuilt version
     #
     agg3 = agg.deepcopy()
+    aggA = agg.deepcopy()
 
     #
     # here we build the complete aggregate and its electronic only version
     #
     agg.build(mult=1)
     agg_el.build(mult=1)
+    aggA.build(mult=1)
 
 
     # total Hamiltonian
@@ -655,7 +657,7 @@ def run(omega, HR, dE, JJ, rate, E0, vib_loc="up", use_vib=True,
     # calculation of absorption spectrum
     #
     time1 = qr.TimeAxis(0.0, 1000, 5.0)
-    absc = qr.MockAbsSpectrumCalculator(time1, system=agg)
+    absc = qr.MockAbsSpectrumCalculator(time1, system=aggA)
     with qr.energy_units("1/cm"):
         absc.bootstrap(rwa=E0)
 
