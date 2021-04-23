@@ -216,7 +216,7 @@ print("\nUsing Quantarhei version", qr.Manager().version)
 #
 # SCRIPT INPUT FILE NAME
 #
-input_file = "script_Followup2021.yaml"
+input_file = "input.yaml"
 INP = qr.Input(input_file, show_input=False)
 
 ################################################################################
@@ -571,14 +571,6 @@ def run(omega, HR, dE, JJ, rate, E0, vib_loc="up", use_vib=True,
 
     with qr.eigenbasis_of(He):
 
-        if He.data[2,2] < He.data[1,1]:
-            Exception("Electronic states not orderred!")
-        operators.append(qr.qm.ProjectionOperator(1, 2, dim=He.dim))
-        with qr.energy_units("1/cm"):
-            print("1 <- 2 : energies = ", He.data[1,1], He.data[2,2], "1/cm")
-        rates.append(rate_sp)
-        print("Transfer time 1 <- 2", 1.0/rate_sp, "fs")
-
         if use_trimer:
             if He.data[3,3] < He.data[2,2]:
                 Exception("Electronic states not orderred!")
@@ -587,6 +579,25 @@ def run(omega, HR, dE, JJ, rate, E0, vib_loc="up", use_vib=True,
                 print("2 <- 3 : energies = ", He.data[2,2], He.data[3,3], "1/cm")
             rates.append(rate)
             print("Transfer time 2 <- 3:", 1.0/rate, "fs")
+            
+            if He.data[2,2] < He.data[1,1]:
+                Exception("Electronic states not orderred!")
+            operators.append(qr.qm.ProjectionOperator(1, 2, dim=He.dim))
+            with qr.energy_units("1/cm"):
+                print("1 <- 2 : energies = ", He.data[1,1], He.data[2,2], "1/cm")
+            rates.append(rate_sp)
+            print("Transfer time 1 <- 2", 1.0/rate_sp, "fs")
+
+        else:
+
+            if He.data[2,2] < He.data[1,1]:
+                Exception("Electronic states not orderred!")
+            operators.append(qr.qm.ProjectionOperator(1, 2, dim=He.dim))
+            with qr.energy_units("1/cm"):
+                print("1 <- 2 : energies = ", He.data[1,1], He.data[2,2], "1/cm")
+            rates.append(rate_sp)
+            print("Transfer time 1 <- 2", 1.0/rate, "fs")
+            
 
     # include detailed balace
     if detailed_balance:
@@ -596,14 +607,20 @@ def run(omega, HR, dE, JJ, rate, E0, vib_loc="up", use_vib=True,
                 Den = (He.data[3,3] - He.data[2,2])/(kB_int*T)
                 operators.append(qr.qm.ProjectionOperator(3, 2, dim=He.dim))
                 thermal_fac = numpy.exp(-Den)
-            rates.append(rate*thermal_fac)
+                rates.append(rate*thermal_fac)
+                Den = (He.data[2,2] - He.data[1,1])/(kB_int*T)
+                operators.append(qr.qm.ProjectionOperator(2, 1, dim=He.dim))
+                thermal_fac = numpy.exp(-Den)
+                rates.append(rate_sp*thermal_fac)
 
-        with qr.eigenbasis_of(He):
-            T = temperature #77.0
-            Den = (He.data[2,2] - He.data[1,1])/(kB_int*T)
-            operators.append(qr.qm.ProjectionOperator(2, 1, dim=He.dim))
-            thermal_fac = numpy.exp(-Den)
-        rates.append(rate*thermal_fac)
+        else:
+
+            with qr.eigenbasis_of(He):
+                T = temperature #77.0
+                Den = (He.data[2,2] - He.data[1,1])/(kB_int*T)
+                operators.append(qr.qm.ProjectionOperator(2, 1, dim=He.dim))
+                thermal_fac = numpy.exp(-Den)
+            rates.append(rate*thermal_fac)
 
     sbi = qr.qm.SystemBathInteraction(sys_operators=operators, rates=rates)
     sbi.set_system(agg)

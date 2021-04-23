@@ -43,7 +43,7 @@ PYTHON= python
 #
 #   DO NOT EDIT BELOW THIS LINE
 #
-SCRPTNAME=script_Followup2021
+SCRPTNAME=input
 SCRDIR=scr
 MOVIES_SCRIP=${SCRDIR}/aux_movies.py
 FIGURES_SCRIPT=${SCRDIR}/aux_figures.py
@@ -211,7 +211,7 @@ copy:
 	mkdir ../${DIR}
 	cp Makefile ../${DIR}
 	cp script_Followup2021.py ../${DIR}
-	cp script_Followup2021.yaml ../${DIR}
+	cp input.yaml ../${DIR}
 	cp job.temp ../${DIR}
 	cp -r scr/ ../${DIR}
 ifneq ("$(wildcard run.sh)","")
@@ -239,18 +239,18 @@ pack:
 	tar rf ${SCRPTNAME}.tar README.txt runme.bat ${SCRPTNAME}.*
 
 back:
-ifneq ("$(wildcard script_Followup2021.yaml)","")
-	mv script_Followup2021.yaml script_Followup2021.yaml.bak
+ifneq ("$(wildcard input.yaml)","")
+	mv input.yaml input.yaml.bak
 endif
 
 #
 # Input files for example runs
 #
-set_example_single: back
-	cp templates/script_Followup2021_example_single.yaml ./script_Followup2021.yaml
+set_example_single_dimer: back
+	cp templates/script_Followup2021_example_single_dimer.yaml ./input.yaml
 	
 set_example_scan: back
-	cp templates/script_Followup2021_example_scan.yaml ./script_Followup2021.yaml
+	cp templates/script_Followup2021_example_scan.yaml ./input.yaml
 	
 
 
