@@ -59,13 +59,16 @@ import quantarhei as qr
 Ncont = 10
 
 # 2D spectrum range in 1/cm
-window=[10500,13550,10500,13550]
+window=[10500+500,13550+500,10500+500,13550+500]
+
+points = [[12500, 13000],[13000,13000]]
+maxs = [["square",[12400,12600,12800,13200]], ["square",[12800,13500,12800,13200]]]
 
 #
 # set lines along the x axis which should be plotted
 # position along y axis in 1/cm
 #
-wlines=[12500.0, 13070.0]
+wlines=[13000.0, 13570.0]
 
 #cmpfile = None
 cmpfile = os.path.join("scr", "parula_colormap.dat") #"parula_colormap.mat"
@@ -152,7 +155,7 @@ try:
 
             sp = cont.get_spectrum(tag)
             #print(tag, sp.params["dE"])
-            sp.normalize2(dpart=qr.part_ABS)
+            
             with qr.energy_units("1/cm"):
                 if fig is None:
                     fig = sp.plot(spart=qr.part_ABS, Npos_contours=Ncont,
@@ -166,6 +169,34 @@ try:
             print("Saving file:", file_name)
             sp.savefig(file_name)
 
+            sval = []
+            for area in maxs:
+                with qr.energy_units("1/cm"):
+                    pt = sp.get_area_max(area)
+                    sval.append([area[1][0], area[1][1], area[1][2], area[1][3], numpy.abs(numpy.real(pt))])
+
+            asval = numpy.array(sval)
+            numpy.savetxt("max_"+ext[ext_i]+postfix+"_cont="
+                         +str(Ncont)+".dat",asval)
+
+            fig = None
+
+#            sp.normalize2(dpart=qr.part_ABS)
+#
+#            with qr.energy_units("1/cm"):
+#                if fig is None:
+#                    fig = sp.plot(spart=qr.part_ABS, Npos_contours=Ncont,
+#                                  window=window,
+#                                  cmap=cmap, vmin_ratio=0.0)
+#                else:
+#                    fig  = sp.plot(fig=fig)
+#
+#            file_name = ("fig_"+ext[ext_i]+postfix+"_cont="
+#                         +str(Ncont)+"_norm.png")
+#            print("Saving file:", file_name)
+#            sp.savefig(file_name)
+
+
             # taking cuts
             with qr.energy_units("1/cm"):
 
@@ -173,7 +204,7 @@ try:
                     print("Spectral cut at "+str(wline))
                     cutfce = sp.get_cut_along_x(wline)
                     x = cutfce.axis
-                    y = numpy.abs(cutfce.data)
+                    y = numpy.abs(numpy.real(cutfce.data))
                     cutfce._make_me(x,y)
                     cutfce.plot(show=False)
                     cutfce.savefig("cut_"+ext[ext_i]+"_"+str(wline)+".png")
@@ -183,6 +214,7 @@ try:
 
     print("\n... single realization files processed")
 except:
+    raise Exception()
     print("\nNo single spectrum files found")
 
 
